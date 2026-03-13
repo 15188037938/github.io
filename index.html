@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>暖君计时器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>暖君计时器</h1>
+        
+        <div class="controls">
+            <input type="text" id="account" placeholder="输入账号">
+            <input type="number" id="duration" step="0.1" placeholder="倒计时(小时)">
+            <input type="number" id="remind" placeholder="提醒时间(分钟)">
+            <button id="addTimer">添加计时器</button>
+        </div>
+        
+        <div class="timer-list">
+            <table id="timerTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>账号</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>倒计时</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 计时器列表将通过JavaScript动态添加 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="removeSelected">删除选中计时器</button>
+            <button id="clearAll">清空所有计时器</button>
+        </div>
+    </div>
+    
+    <!-- 提醒模态框 -->
+    <div id="reminderModal" class="modal">
+        <div class="modal-content">
+            <h3>提醒</h3>
+            <p id="reminderAccount"></p>
+            <p id="reminderMessage"></p>
+            <button id="closeReminder">确定</button>
+        </div>
+    </div>
+    
+    <!-- 错误提示模态框 -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <h3>错误</h3>
+            <p id="errorMessage"></p>
+            <button id="closeError">确定</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
