@@ -89,11 +89,25 @@ class 计时器应用 {
                 提醒时间 = 提醒;
             }
             
-            // 计算开始时间和结束时间
+            // 计算开始时间和结束时间（北京时间 UTC+8）
             const 现在 = new Date();
-            const 开始时间 = 现在.toISOString().replace('T', ' ').substring(0, 19);
-            const 结束时间 = new Date(现在.getTime() + 时长分钟 * 60 * 1000).toISOString().replace('T', ' ').substring(0, 19);
             const 结束时间戳 = 现在.getTime() + 时长分钟 * 60 * 1000;
+            
+            // 转换为北京时间格式显示
+            const 格式化北京时间 = (时间戳) => {
+                const 日期 = new Date(时间戳);
+                // 手动计算北京时间（UTC+8）
+                const 年 = 日期.getUTCFullYear();
+                const 月 = String(日期.getUTCMonth() + 1).padStart(2, '0');
+                const 日 = String(日期.getUTCDate()).padStart(2, '0');
+                const 时 = String((日期.getUTCHours() + 8) % 24).padStart(2, '0');
+                const 分 = String(日期.getUTCMinutes()).padStart(2, '0');
+                const 秒 = String(日期.getUTCSeconds()).padStart(2, '0');
+                return `${年}-${月}-${日} ${时}:${分}:${秒}`;
+            };
+            
+            const 开始时间 = 格式化北京时间(现在.getTime());
+            const 结束时间 = 格式化北京时间(结束时间戳);
             
             // 创建计时器数据
             const 计时器数据 = {
@@ -117,6 +131,9 @@ class 计时器应用 {
             
             // 保存数据
             this.保存数据();
+            
+            // 排序计时器列表（根据倒计时大小，即结束时间戳）
+            this.排序计时器();
             
             // 清空输入框
             this.账号输入框.value = '';
@@ -249,6 +266,22 @@ class 计时器应用 {
         localStorage.setItem('timersData', JSON.stringify(this.计时器列表));
     }
     
+    排序计时器() {
+        // 根据结束时间戳排序（倒计时小的在前）
+        this.计时器列表.sort((a, b) => a.end_timestamp - b.end_timestamp);
+        
+        // 清空表格
+        this.计时器表格.innerHTML = '';
+        
+        // 重新添加到表格
+        this.计时器列表.forEach(计时器数据 => {
+            this.添加计时器到表格(计时器数据);
+        });
+        
+        // 重新启动倒计时（保持原有定时器，只更新表格显示）
+        // 注意：这里不需要重新启动定时器，因为定时器已经在运行
+    }
+    
     加载数据() {
         const 保存的数据 = localStorage.getItem('timersData');
         if (保存的数据) {
@@ -261,13 +294,13 @@ class 计时器应用 {
                         // 添加到列表
                         this.计时器列表.push(计时器数据);
                         
-                        // 添加到表格
-                        this.添加计时器到表格(计时器数据);
-                        
                         // 启动倒计时
                         this.启动倒计时(计时器数据);
                     }
                 });
+                
+                // 加载数据后排序
+                this.排序计时器();
             } catch (error) {
                 console.error('加载数据失败:', error);
             }
